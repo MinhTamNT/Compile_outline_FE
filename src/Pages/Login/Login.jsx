@@ -125,12 +125,11 @@ export const Login = () => {
           </form>
           <div className="mt-6">
             <p className="mt-2 gap-2 text-center text-sm text-gray-600 max-w">
-              Or
               <Link
                 to="/register"
-                className="font-medium text-blue-600 hover:text-blue-500"
+                className="font-medium ml-2 text-lg text-blue-600 hover:text-blue-500"
               >
-                create an account
+                Create an account ?
               </Link>
             </p>
           </div>
