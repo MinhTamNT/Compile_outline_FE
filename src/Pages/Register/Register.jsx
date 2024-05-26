@@ -4,11 +4,12 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { FaSpinner, FaUserCircle } from "react-icons/fa";
 import { InputField } from "./InputField";
+import { Loading } from "../../components/Loading/Loading";
 
 export const Register = () => {
   const fileInputRef = useRef(null);
   const [avatarPreview, setAvatarPreview] = useState(null);
-
+  const [isLoading, setIsloading] = useState(false);
   const formik = useFormik({
     initialValues: {
       firstName: "",
@@ -36,9 +37,11 @@ export const Register = () => {
     }),
     onSubmit: (values, { setSubmitting }) => {
       setSubmitting(true);
+      setIsloading(true);
       setTimeout(() => {
         alert(JSON.stringify(values, null, 2));
         setSubmitting(false);
+        setIsloading(false);
       }, 2000);
     },
   });
@@ -46,33 +49,33 @@ export const Register = () => {
   const fields = [
     {
       id: "firstName",
-      label: "First Name",
+      label: "Họ",
       type: "text",
-      placeholder: "Enter your first name",
+      placeholder: "Nhập vào Họ",
     },
     {
       id: "lastName",
-      label: "Last Name",
+      label: "Tên",
       type: "text",
-      placeholder: "Enter your last name",
+      placeholder: "Nhập vào tên",
     },
     {
       id: "email",
       label: "Email",
       type: "email",
-      placeholder: "Enter your email",
+      placeholder: "Nhập vào email",
     },
     {
       id: "password",
-      label: "Password",
+      label: "Mật Khẩu",
       type: "password",
-      placeholder: "Enter your password",
+      placeholder: "Nhập vào mật khẩu",
     },
     {
       id: "confirmPassword",
-      label: "Confirm Password",
+      label: "Nhập Lại Mật khẩu",
       type: "password",
-      placeholder: "Confirm your password",
+      placeholder: "Nhập lại mật khẩu",
     },
   ];
 
@@ -95,6 +98,7 @@ export const Register = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+      {isLoading && <Loading />}
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
           Create an account
@@ -160,11 +164,7 @@ export const Register = () => {
                 className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                 disabled={formik.isSubmitting}
               >
-                {formik.isSubmitting ? (
-                  <FaSpinner className="animate-spin h-5 w-5 mr-3" />
-                ) : (
-                  "Register"
-                )}
+                Đăng kí
               </button>
             </div>
           </form>

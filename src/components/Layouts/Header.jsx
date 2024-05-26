@@ -1,14 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import {
-  Button,
-  Typography,
-  Menu,
-  MenuItem,
-  Avatar,
-  IconButton,
-} from "@mui/material";
-import { Logout, LogoutOutlined } from "@mui/icons-material";
+import { Button, Typography, Menu, MenuItem, Avatar } from "@mui/material";
+import { AccountCircle, Settings, Logout } from "@mui/icons-material";
 
 export const Header = () => {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -20,6 +13,9 @@ export const Header = () => {
   const handleProfileClose = () => {
     setAnchorEl(null);
   };
+
+  
+
 
   return (
     <header className="bg-gray-800 text-white shadow-md">
@@ -46,6 +42,7 @@ export const Header = () => {
                 component={Link}
                 to="/profile"
               >
+                <AccountCircle sx={{ mr: 1 }} />
                 <Typography variant="inherit">Thông tin</Typography>
               </MenuItem>
               <MenuItem
@@ -53,6 +50,7 @@ export const Header = () => {
                 component={Link}
                 to="/settings"
               >
+                <Settings sx={{ mr: 1 }} />
                 <Typography variant="inherit">Cài Đặt</Typography>
               </MenuItem>
             </Menu>
@@ -63,7 +61,9 @@ export const Header = () => {
               onClick={() => alert("Logged out")}
               sx={{ ml: 2, padding: 1 }}
             >
-              <p className="text-[10px] md:text-[14px]">Đăng Xuất</p>
+              <Typography variant="caption" style={{ fontSize: "12px" }}>
+                Đăng Xuất
+              </Typography>
             </Button>
           </div>
         </div>
