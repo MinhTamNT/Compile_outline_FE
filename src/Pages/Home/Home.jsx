@@ -4,7 +4,7 @@ import StudentDashboard from "../../components/Layouts/Student/StudentDashboard"
 
 export const Home = () => {
   const user = {
-    role: "",
+    role: "teacher",
   };
   return user.role === "teacher" ? <TeacherDashboard /> : <StudentDashboard />;
 };

@@ -40,7 +40,7 @@ const TeacherDashboard = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="flex justify-center md:w-full">
-          <div className="bg-gradient-to-r md:w-[600px] w-full from-blue-400 to-indigo-400 text-white shadow-md hover:shadow-lg transition-all rounded-lg overflow-hidden transform hover:scale-105">
+          <div className="bg-gradient-to-r  w-full from-blue-400 to-indigo-400 text-white shadow-md hover:shadow-lg transition-all rounded-lg overflow-hidden transform hover:scale-105">
             <div className="text-center p-6">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -70,7 +70,7 @@ const TeacherDashboard = () => {
         </div>
 
         <div className="flex justify-center md:w-full">
-          <div className="bg-gradient-to-r from-green-400 md:w-[600px] w-full to-teal-400 text-white shadow-md hover:shadow-lg transition-all rounded-lg overflow-hidden transform hover:scale-105">
+          <div className="bg-gradient-to-r from-green-400  w-full to-teal-400 text-white shadow-md hover:shadow-lg transition-all rounded-lg overflow-hidden transform hover:scale-105">
             <div className="text-center p-6">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
