@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { Button, Typography, Menu, MenuItem, Avatar } from "@mui/material";
-import { AccountCircle, Settings, Logout } from "@mui/icons-material";
+import { Typography, Menu, MenuItem, Avatar, Button } from "@mui/material";
+import { AccountCircle, Logout, Edit, LibraryBooks } from "@mui/icons-material";
 
 export const Header = () => {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -14,8 +14,13 @@ export const Header = () => {
     setAnchorEl(null);
   };
 
-  
-
+  const user = {
+    avatarUser:
+      "https://scontent.fsgn8-4.fna.fbcdn.net/v/t1.6435-9/47262838_2138678889505178_8494951695191638016_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=5f2048&_nc_ohc=HM54JaB5WLIQ7kNvgFWw27A&_nc_ht=scontent.fsgn8-4.fna&oh=00_AYATUeqOQ5-34JKnN1f4svJ057EJQgSTqpng13XOGILekA&oe=667BE682",
+    firstName: "Dương Hữu",
+    lastName: "Thành",
+    role: "giangvien",
+  };
 
   return (
     <header className="bg-gray-800 text-white shadow-md">
@@ -24,13 +29,40 @@ export const Header = () => {
           <Link to="/">Biên Soạn Đề Cương</Link>
         </div>
         <div className="flex items-center space-x-4">
+          {user.role === "giangvien" && (
+            <div className="hidden md:flex space-x-4">
+              <Button
+                component={Link}
+                to="/create-syllabus"
+                startIcon={<Edit />}
+                className="text-white"
+              >
+                Soạn Đề Cương
+              </Button>
+              <Button
+                component={Link}
+                to="/manage-syllabus"
+                startIcon={<LibraryBooks />}
+                className="text-white"
+              >
+                Quản Lý Đề Cương
+              </Button>
+            </div>
+          )}
           <div className="relative flex items-center gap-2">
-            <Avatar
-              src="https://scontent.fsgn8-3.fna.fbcdn.net/v/t39.30808-6/326403390_1522209771635250_7604274983211479574_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=5f2048&_nc_ohc=2Bc8s9nqRjEQ7kNvgHWenrP&_nc_ht=scontent.fsgn8-3.fna&oh=00_AYAsLx173PJ2OzpgGvGS1001vYeb8RMN4_lHGnEYSZnjkw&oe=6659204A"
-              alt="avatar-user"
-              className="cursor-pointer"
+            <button
+              className="flex items-center gap-2 cursor-pointer bg-gradient-to-r from-blue-600 to-gray-800 p-2 rounded-lg shadow-lg hover:from-blue-700 hover:to-gray-900 transition-all md:mr-4"
               onClick={handleProfileClick}
-            />
+            >
+              <Avatar
+                src={user.avatarUser}
+                alt="avatar-user"
+                className="cursor-pointer transition-transform transform hover:scale-105"
+              />
+              <p className="transition-opacity hover:opacity-80 hidden md:block">
+                {user.firstName} {user.lastName}
+              </p>
+            </button>
             <Menu
               anchorEl={anchorEl}
               open={Boolean(anchorEl)}
@@ -41,30 +73,22 @@ export const Header = () => {
                 onClick={handleProfileClose}
                 component={Link}
                 to="/profile"
+                className="hover:bg-gray-200 transition-colors"
               >
                 <AccountCircle sx={{ mr: 1 }} />
                 <Typography variant="inherit">Thông tin</Typography>
               </MenuItem>
+
               <MenuItem
-                onClick={handleProfileClose}
-                component={Link}
-                to="/settings"
+                onClick={() => {
+                  handleProfileClose();
+                }}
+                className="hover:bg-gray-200 transition-colors"
               >
-                <Settings sx={{ mr: 1 }} />
-                <Typography variant="inherit">Cài Đặt</Typography>
+                <Logout sx={{ mr: 1 }} />
+                <Typography variant="inherit">Đăng Xuất</Typography>
               </MenuItem>
             </Menu>
-            <Button
-              variant="contained"
-              color="primary"
-              startIcon={<Logout />}
-              onClick={() => alert("Logged out")}
-              sx={{ ml: 2, padding: 1 }}
-            >
-              <Typography variant="caption" style={{ fontSize: "12px" }}>
-                Đăng Xuất
-              </Typography>
-            </Button>
           </div>
         </div>
       </div>
