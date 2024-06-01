@@ -3,4 +3,6 @@ export const route = {
   login: "/login",
   register: "/register",
   profile: "/profile",
+  createSyllab: "/create-syllabus",
+  chat: "/chat",
 };
