@@ -1,21 +1,21 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { IoMdArrowBack } from "react-icons/io"; // Using an icon for the back button
+import { IoMdArrowBack, IoMdMenu } from "react-icons/io"; // Import IoMdMenu icon
 
-export const ChatHeader = ({ user }) => {
+export const ChatHeader = ({ user, toggleSidebar }) => {
   const navigate = useNavigate();
 
   const handleBack = () => {
-    navigate("/"); // Navigate to the previous page
+    navigate(-1);
   };
 
   return (
     <div className="flex items-center p-4 bg-blue-600 text-white">
       <button
-        onClick={handleBack}
-        className="mr-4 text-white hover:text-gray-300 focus:outline-none"
+        onClick={toggleSidebar} // Call the toggleSidebar function
+        className="mr-4 text-white hover:text-gray-300 focus:outline-none md:hidden" // Hide the button on medium screens and above
       >
-        <IoMdArrowBack size={24} />
+        <IoMdMenu size={24} />
       </button>
       <img
         src={user.avatar}

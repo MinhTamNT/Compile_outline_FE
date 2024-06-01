@@ -1,70 +1,58 @@
-import { useState } from "react";
+import React, { useState } from "react";
+import { IoMdMenu } from "react-icons/io"; // Import IoMdMenu icon
+import { ChatUserList } from "./ChatUserList";
 import { ChatHeader } from "./ChatHeader";
-import ChatMessage from "./ChatMessgae,";
+import { ChatMessages } from "./ChatMessgae,";
+
+const sampleUsers = [
+  {
+    id: 1,
+    name: "John Doe",
+    avatar: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT99hEiDGWLpnid1kGLmnOs8RMuyaitDLM2GA&s",
+  },
+  {
+    id: 2,
+    name: "Jane Smith",
+    avatar: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT99hEiDGWLpnid1kGLmnOs8RMuyaitDLM2GA&s",
+  },
+  {
+    id: 3,
+    name: "Alice Johnson",
+    avatar: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT99hEiDGWLpnid1kGLmnOs8RMuyaitDLM2GA&s",
+  },
+];
 
 export const Chat = () => {
-  const [messages, setMessages] = useState([
-    { id: 1, text: "Hello!", sender: "other", timestamp: "10:00 AM" },
-    { id: 2, text: "Hi, how are you?", sender: "me", timestamp: "10:01 AM" },
-    {
-      id: 3,
-      text: "I'm good, thanks!",
-      sender: "other",
-      timestamp: "10:02 AM",
-    },
-  ]);
-  const [newMessage, setNewMessage] = useState("");
+  const [selectedUser, setSelectedUser] = useState(sampleUsers[0]);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  const handleSendMessage = () => {
-    if (newMessage.trim()) {
-      setMessages([
-        ...messages,
-        {
-          id: Date.now(),
-          text: newMessage,
-          sender: "me",
-          timestamp: new Date().toLocaleTimeString(),
-        },
-      ]);
-      setNewMessage("");
-    }
+  const handleUserSelect = (user) => {
+    setSelectedUser(user);
+    setIsSidebarOpen(false); // Close sidebar on mobile when a user is selected
   };
 
-  const chatUser = {
-    name: "John Doe",
-    avatar: "https://via.placeholder.com/150",
-    status: "Online",
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
   };
 
   return (
-    <div className="flex flex-col h-screen">
-      <ChatHeader user={chatUser} />
-      <div className="flex-1 p-4 overflow-auto">
-        <div className="flex flex-col gap-4">
-          {messages.map((message) => (
-            <ChatMessage key={message.id} message={message} />
-          ))}
-        </div>
+    <div className="flex h-screen overflow-hidden">
+      <button
+        className={`fixed inset-0 bg-gray-800  bg-opacity-50 z-10 transition-opacity duration-200 ${
+          isSidebarOpen ? "opacity-100 visible" : "opacity-0 invisible"
+        }`}
+        onClick={toggleSidebar}
+      ></button>
+      <div
+        className={`fixed inset-y-0 left-0 w-64 bg-gray-200 p-4 overflow-y-auto z-20 transform transition-transform duration-200 ${
+          isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+        } md:relative md:translate-x-0 md:w-1/4`}
+      >
+        <ChatUserList users={sampleUsers} onUserSelect={handleUserSelect} />
       </div>
-      <div className="flex-none p-4 bg-gray-100">
-        <div className="flex gap-2">
-          <input
-            type="text"
-            value={newMessage}
-            onChange={(e) => setNewMessage(e.target.value)}
-            className="flex-1 p-2 border border-gray-300 rounded-lg"
-            placeholder="Type a message..."
-            onKeyDown={(e) => {
-              if (e.key === "Enter") handleSendMessage();
-            }}
-          />
-          <button
-            onClick={handleSendMessage}
-            className="bg-blue-600 text-white p-3 rounded-lg"
-          >
-            Send
-          </button>
-        </div>
+      <div className="flex flex-col flex-1">
+        <ChatHeader user={selectedUser} toggleSidebar={toggleSidebar} />
+        <ChatMessages user={selectedUser} />
       </div>
     </div>
   );
