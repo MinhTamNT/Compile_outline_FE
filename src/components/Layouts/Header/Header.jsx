@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { Typography, Menu, MenuItem, Avatar, Button } from "@mui/material";
-import { AccountCircle, Logout, Edit, LibraryBooks } from "@mui/icons-material";
+import { Typography, Menu, MenuItem, Avatar } from "@mui/material";
+import { AccountCircle, Logout } from "@mui/icons-material";
 
 export const Header = () => {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -23,35 +23,17 @@ export const Header = () => {
   };
 
   return (
-    <header className="bg-gray-800 text-white shadow-md">
+    <header className="bg-gradient-to-r from-blue-500 to-gray-300 text-white shadow-lg">
       <div className="container mx-auto flex justify-between items-center py-4 px-6 relative">
         <div className="md:text-2xl text-lg font-bold">
-          <Link to="/">Biên Soạn Đề Cương</Link>
+          <Link to="/" className="hover:text-blue-800 transition duration-300">
+            Biên Soạn Đề Cương
+          </Link>
         </div>
         <div className="flex items-center space-x-4">
-          {user.role === "giangvien" && (
-            <div className="hidden md:flex space-x-4">
-              <Button
-                component={Link}
-                to="/create-syllabus"
-                startIcon={<Edit />}
-                className="text-white"
-              >
-                Soạn Đề Cương
-              </Button>
-              <Button
-                component={Link}
-                to="/manage-syllabus"
-                startIcon={<LibraryBooks />}
-                className="text-white"
-              >
-                Quản Lý Đề Cương
-              </Button>
-            </div>
-          )}
           <div className="relative flex items-center gap-2">
             <button
-              className="flex items-center gap-2 cursor-pointer bg-gradient-to-r from-blue-600 to-gray-800 p-2 rounded-lg shadow-lg hover:from-blue-700 hover:to-gray-900 transition-all md:mr-4"
+              className="flex items-center gap-2 cursor-pointer bg-gradient-to-r  p-2 rounded-lg shadow-lg transition-all duration-300"
               onClick={handleProfileClick}
             >
               <Avatar
@@ -67,26 +49,49 @@ export const Header = () => {
               anchorEl={anchorEl}
               open={Boolean(anchorEl)}
               onClose={handleProfileClose}
-              sx={{ mt: 1, "& .MuiMenu-paper": { width: "200px" } }} // Custom width
+              sx={{
+                mt: 1,
+                "& .MuiMenu-paper": {
+                  width: "200px",
+                  backgroundColor: "#f8fafc", // Background color
+                  borderRadius: "0.5rem", // Rounded corners
+                  boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)", // Shadow
+                },
+                "& .MuiMenu-list": {
+                  padding: 0,
+                },
+              }}
             >
               <MenuItem
                 onClick={handleProfileClose}
                 component={Link}
                 to="/profile"
-                className="hover:bg-gray-200 transition-colors"
+                sx={{
+                  "&:hover": {
+                    backgroundColor: "#e2e8f0", // Hover background color
+                  },
+                  padding: "10px 20px",
+                  transition: "background-color 0.2s ease-in-out",
+                }}
               >
-                <AccountCircle sx={{ mr: 1 }} />
-                <Typography variant="inherit">Thông tin</Typography>
+                <AccountCircle sx={{ mr: 1, color: "#3b82f6" }} />
+                <Typography variant="inherit" className="text-gray-700">Thông tin</Typography>
               </MenuItem>
 
               <MenuItem
                 onClick={() => {
                   handleProfileClose();
                 }}
-                className="hover:bg-gray-200 transition-colors"
+                sx={{
+                  "&:hover": {
+                    backgroundColor: "#e2e8f0", // Hover background color
+                  },
+                  padding: "10px 20px",
+                  transition: "background-color 0.2s ease-in-out",
+                }}
               >
-                <Logout sx={{ mr: 1 }} />
-                <Typography variant="inherit">Đăng Xuất</Typography>
+                <Logout sx={{ mr: 1, color: "#ef4444" }} />
+                <Typography variant="inherit" className="text-gray-700">Đăng Xuất</Typography>
               </MenuItem>
             </Menu>
           </div>

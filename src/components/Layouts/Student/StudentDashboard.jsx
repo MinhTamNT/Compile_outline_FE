@@ -1,178 +1,90 @@
 import React, { useState } from "react";
-import { Typography, Grid, TextField, MenuItem } from "@mui/material";
-import SyllabusCard from "../../SyllabusCard/SyllabusCard";
-import Pagination from "@mui/material/Pagination";
 
-const StudentDashboard = () => {
-    const syllabi = [
-        {
-          id: 1,
-          title: "Đề Cương Toán Cao Cấp",
-          description: "Toán Cao Cấp - Kỳ I 2024",
-          faculty: "Khoa Khoa Học Tự Nhiên",
-          year: "2024",
-        },
-        {
-          id: 2,
-          title: "Đề Cương Lập Trình C#",
-          description: "Lập Trình C# - Kỳ II 2024",
-          faculty: "Khoa Công Nghệ Thông Tin",
-          year: "2024",
-        },
-        {
-          id: 3,
-          title: "Đề Cương Quản Trị Mạng",
-          description: "Quản Trị Mạng - Kỳ I 2024",
-          faculty: "Khoa Công Nghệ Thông Tin",
-          year: "2024",
-        },
-        {
-          id: 4,
-          title: "Đề Cương Toán Cao Cấp",
-          description: "Toán Cao Cấp - Kỳ II 2023",
-          faculty: "Khoa Khoa Học Tự Nhiên",
-          year: "2023",
-        },
-        {
-          id: 5,
-          title: "Đề Cương Lập Trình Java",
-          description: "Lập Trình Java - Kỳ I 2024",
-          faculty: "Khoa Công Nghệ Thông Tin",
-          year: "2024",
-        },
-        {
-          id: 6,
-          title: "Đề Cương Quản Trị Cơ Sở Dữ Liệu",
-          description: "Quản Trị Cơ Sở Dữ Liệu - Kỳ II 2023",
-          faculty: "Khoa Công Nghệ Thông Tin",
-          year: "2023",
-        },
-        {
-          id: 7,
-          title: "Đề Cương Kỹ Thuật Máy Tính",
-          description: "Kỹ Thuật Máy Tính - Kỳ I 2024",
-          faculty: "Khoa Công Nghệ Thông Tin",
-          year: "2024",
-        },
-        {
-          id: 8,
-          title: "Đề Cương Toán Rời Rạc",
-          description: "Toán Rời Rạc - Kỳ II 2023",
-          faculty: "Khoa Khoa Học Tự Nhiên",
-          year: "2023",
-        },
-        {
-          id: 9,
-          title: "Đề Cương Lập Trình Python",
-          description: "Lập Trình Python - Kỳ II 2024",
-          faculty: "Khoa Công Nghệ Thông Tin",
-          year: "2024",
-        },
-        {
-          id: 10,
-          title: "Đề Cương An Toàn Thông Tin",
-          description: "An Toàn Thông Tin - Kỳ I 2024",
-          faculty: "Khoa Công Nghệ Thông Tin",
-          year: "2024",
-        },
-        // Add more syllabi as needed
-      ];
-      ;
+const courses = [
+  { id: 1, department: "Khoa học máy tính", year: 2023, title: "Cấu trúc dữ liệu", instructor: "Nguyễn Văn A", semester: "Học kỳ 1" },
+  { id: 2, department: "Khoa học máy tính", year: 2024, title: "Thuật toán", instructor: "Trần Thị B", semester: "Học kỳ 2" },
+  { id: 3, department: "Toán học", year: 2023, title: "Giải tích I", instructor: "Lê Văn C", semester: "Học kỳ 1" },
+  { id: 4, department: "Toán học", year: 2024, title: "Đại số tuyến tính", instructor: "Phạm Thị D", semester: "Học kỳ 2" },
+];
 
-  const [filter, setFilter] = useState({ faculty: "", year: "" });
+const departments = ["Khoa học máy tính", "Toán học"];
+const years = [2023, 2024];
 
-  const handleFilterChange = (e) => {
-    setFilter({ ...filter, [e.target.name]: e.target.value });
-  };
+export const StudentDashboard = () => {
+  const [selectedDepartment, setSelectedDepartment] = useState("");
+  const [selectedYear, setSelectedYear] = useState("");
 
-  const filteredSyllabi = syllabi.filter(
-    (s) =>
-      (filter.faculty === "" || s.faculty === filter.faculty) &&
-      (filter.year === "" || s.year === filter.year)
-  );
-
-  // Pagination
-  const [page, setPage] = useState(1);
-  const itemsPerPage = 4;
-  const totalPages = Math.ceil(filteredSyllabi.length / itemsPerPage);
-
-  const handleChangePage = (event, value) => {
-    setPage(value);
-  };
-
-  const paginatedSyllabi = filteredSyllabi.slice(
-    (page - 1) * itemsPerPage,
-    page * itemsPerPage
-  );
+  const filteredCourses = courses.filter((course) => {
+    return (
+      (selectedDepartment ? course.department === selectedDepartment : true) &&
+      (selectedYear ? course.year === selectedYear : true)
+    );
+  });
 
   return (
-    <div className="container mx-auto py-6 px-6">
-      <Typography variant="h4" className="mb-6 text-center text-gray-800">
-        Danh Sách Đề Cương
-      </Typography>
+    <div className="min-h-screen bg-gradient-to-r from-blue-50 to-blue-100 p-4">
+      <div className="max-w-7xl mx-auto">
+        <h1 className="text-3xl font-extrabold text-blue-700 mb-6 text-center">Danh sách các đề cương</h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <div className="md:col-span-1">
-          <Typography variant="h6" className="mb-4">
-            Bộ Lọc
-          </Typography>
-          <div className="mb-4">
-            <TextField
-              select
-              label="Chọn Khoa"
-              name="faculty"
-              value={filter.faculty}
-              onChange={handleFilterChange}
-              fullWidth
-              variant="outlined"
-              color="primary"
-            >
-              <MenuItem value="">Tất Cả</MenuItem>
-              <MenuItem value="Khoa Khoa Học Tự Nhiên">
-                Khoa Khoa Học Tự Nhiên
-              </MenuItem>
-              <MenuItem value="Khoa Công Nghệ Thông Tin">
-                Khoa Công Nghệ Thông Tin
-              </MenuItem>
-            </TextField>
-          </div>
-          <div>
-            <TextField
-              select
-              label="Chọn Năm"
-              name="year"
-              value={filter.year}
-              onChange={handleFilterChange}
-              fullWidth
-              variant="outlined"
-              color="primary"
-            >
-              <MenuItem value="">Tất Cả</MenuItem>
-              <MenuItem value="2024">2024</MenuItem>
-              <MenuItem value="2023">2023</MenuItem>
-            </TextField>
+        <div className="bg-white p-6 rounded-lg shadow-lg mb-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div>
+              <label className="block mb-2 text-sm font-medium text-gray-700">Theo Khoa</label>
+              <select
+                className="block w-full mt-1 px-4 py-2 rounded-lg border-2 border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                value={selectedDepartment}
+                onChange={(e) => setSelectedDepartment(e.target.value)}
+              >
+                <option value="">Tất cả các khoa</option>
+                {departments.map((dept) => (
+                  <option key={dept} value={dept}>
+                    {dept}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block mb-2 text-sm font-medium text-gray-700">Theo Năm</label>
+              <select
+                className="block w-full mt-1 px-4 py-2 rounded-lg border-2 border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                value={selectedYear}
+                onChange={(e) => setSelectedYear(e.target.value)}
+              >
+                <option value="">Tất cả các năm</option>
+                {years.map((year) => (
+                  <option key={year} value={year}>
+                    {year}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
         </div>
-        <div className="md:col-span-2">
-          <Grid container spacing={3}>
-            {paginatedSyllabi.map((syllabus) => (
-              <Grid item xs={12} md={6} key={syllabus.id}>
-                <SyllabusCard syllabus={syllabus} isTeacher={false} />
-              </Grid>
-            ))}
-          </Grid>
-          <div className="flex justify-center mt-4">
-            <Pagination
-              count={totalPages}
-              page={page}
-              onChange={handleChangePage}
-              color="primary"
-            />
-          </div>
+
+        <div className="bg-white p-6 rounded-lg shadow-lg">
+          <h2 className="text-2xl font-bold text-blue-800 mb-4">Đề Cương Môn Học</h2>
+          {filteredCourses.length > 0 ? (
+            <ul className="space-y-4">
+              {filteredCourses.map((course) => (
+                <li key={course.id} className="border-b pb-2 last:border-b-0">
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <p className="text-lg font-medium">{course.title}</p>
+                      <p className="text-sm text-gray-600">
+                        {course.department} - {course.year} - {course.semester}
+                      </p>
+                      <p className="text-sm text-gray-600">Giảng viên: {course.instructor}</p>
+                    </div>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-gray-500">Không tìm thấy môn học nào</p>
+          )}
         </div>
       </div>
     </div>
   );
 };
-
-export default StudentDashboard;

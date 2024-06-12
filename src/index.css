@@ -2,6 +2,21 @@
 @tailwind components;
 @tailwind utilities;
 
+
+html ::-webkit-scrollbar {
+    width: 10px;
+}
+html ::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background-color: rgba(22, 24, 35, 0.06);
+}
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: rgb(231 229 228);
+    color: #343a40;
+    font-size: 16px;
+}
+
 @layer components {
     .input-field-login{
         @apply appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm
