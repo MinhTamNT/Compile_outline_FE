@@ -2,8 +2,7 @@ import React, { useState } from "react";
 
 export const Profile = () => {
   const [isEditing, setIsEditing] = useState(false);
-
-  const userInfo = {
+  const [userInfo, setUserInfo] = useState({
     username: "dthanh123",
     avatarUser:
       "https://scontent.fsgn8-4.fna.fbcdn.net/v/t1.6435-9/47262838_2138678889505178_8494951695191638016_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=5f2048&_nc_ohc=HM54JaB5WLIQ7kNvgFWw27A&_nc_ht=scontent.fsgn8-4.fna&oh=00_AYATUeqOQ5-34JKnN1f4svJ057EJQgSTqpng13XOGILekA&oe=667BE682",
@@ -11,10 +10,18 @@ export const Profile = () => {
     phone: "+8434567890",
     address: "123 Main St, City, Country",
     role: "Giao Vien",
-  };
+  });
 
   const toggleEdit = () => {
     setIsEditing(!isEditing);
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setUserInfo({
+      ...userInfo,
+      [name]: value,
+    });
   };
 
   const infoFields = [
@@ -53,6 +60,7 @@ export const Profile = () => {
                   name={field.name}
                   value={userInfo[field.name]}
                   readOnly={!isEditing}
+                  onChange={handleChange}
                   className={`w-full p-2 border rounded-md shadow-sm focus:outline-none ${
                     isEditing
                       ? "bg-white border-blue-500 focus:ring-2 focus:ring-blue-200"
