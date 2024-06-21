@@ -32,8 +32,8 @@ export const Login = () => {
           username: values.username,
           password: values.password,
         };
-        await loginUser(user, dispatch); // Sử dụng await để đợi loginUser hoàn thành
-        navigate("/"); // Chuyển hướng đến trang chủ sau khi đăng nhập thành công
+        await loginUser(user, dispatch); 
+        navigate("/"); 
       } catch (error) {
         console.log(error);
       } finally {

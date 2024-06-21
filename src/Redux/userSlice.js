@@ -1,5 +1,4 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { API, authApi, endpoints } from "../Service/ApiConfig";
+import { createSlice } from "@reduxjs/toolkit";
 
 const userSlice = createSlice({
   name: "user",

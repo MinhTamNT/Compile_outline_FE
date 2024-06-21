@@ -1,39 +1,72 @@
-import React, { useState } from "react";
-import { ChatMessages } from "./ChatMessgae,";
-import { ChatHeader } from "./ChatHeader";
+import React, { useState, useEffect } from "react";
 import { ChatUserList } from "./ChatUserList";
-const sampleUsers = [
-  {
-    id: 1,
-    name: "John Doe",
-    avatar:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT99hEiDGWLpnid1kGLmnOs8RMuyaitDLM2GA&s",
-  },
-  {
-    id: 2,
-    name: "Jane Smith",
-    avatar:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT99hEiDGWLpnid1kGLmnOs8RMuyaitDLM2GA&s",
-  },
-  {
-    id: 3,
-    name: "Alice Johnson",
-    avatar:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT99hEiDGWLpnid1kGLmnOs8RMuyaitDLM2GA&s",
-  },
-];
-
+import { db } from "../../Service/firebaseConfig";
+import { collection, getDocs, addDoc, query, where } from "firebase/firestore";
+import { useSelector } from "react-redux";
+import ChatMessages from "./ChatMessgae,";
+import { ChatHeader } from "./ChatHeader";
 export const Chat = () => {
-  const [selectedUser, setSelectedUser] = useState(sampleUsers[0]);
+  const [selectedUser, setSelectedUser] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [users, setUsers] = useState([]);
+  const [currentRoomId, setCurrentRoomId] = useState(null);
+  const currentUser = useSelector((state) => state?.user?.user?.currentUser);
 
-  const handleUserSelect = (user) => {
+  const handleUserSelect = async (user) => {
     setSelectedUser(user);
-    setIsSidebarOpen(false); // Close sidebar on mobile when a user is selected
+    setIsSidebarOpen(false);
+
+    const roomId = await getOrCreateRoom(currentUser.username, user.username);
+    setCurrentRoomId(roomId);
   };
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
+  };
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, "users"));
+        const fetchedUsers = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setUsers(fetchedUsers);
+      } catch (error) {
+        console.error("Error fetching users: ", error);
+      }
+    };
+
+    fetchUsers();
+  }, []);
+
+  const getOrCreateRoom = async (currentUsername, otherUsername) => {
+    const roomsRef = collection(db, "rooms");
+
+    const q = query(
+      roomsRef,
+      where("members", "array-contains-any", [currentUsername, otherUsername])
+    );
+
+    const querySnapshot = await getDocs(q);
+
+    for (const docSnap of querySnapshot.docs) {
+      const room = docSnap.data();
+      if (
+        room.members.includes(currentUsername) &&
+        room.members.includes(otherUsername)
+      ) {
+        return docSnap.id; // Trả về ID của phòng chat đã có
+      }
+    }
+
+    const newRoomRef = await addDoc(roomsRef, {
+      members: [currentUsername, otherUsername],
+      createdAt: new Date(),
+    });
+
+    return newRoomRef.id; // Trả về ID của phòng chat mới tạo
   };
 
   return (
@@ -49,11 +82,15 @@ export const Chat = () => {
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
         } md:relative md:translate-x-0 md:w-1/4`}
       >
-        <ChatUserList  users={sampleUsers} onUserSelect={handleUserSelect} />
+        <ChatUserList users={users} onUserSelect={handleUserSelect} />
       </div>
       <div className="flex flex-col flex-1">
-        <ChatHeader user={selectedUser} toggleSidebar={toggleSidebar} />
-        <ChatMessages user={selectedUser} />
+        {selectedUser && currentRoomId && (
+          <>
+            <ChatHeader user={selectedUser} toggleSidebar={toggleSidebar} />
+            <ChatMessages roomId={currentRoomId} />
+          </>
+        )}
       </div>
     </div>
   );

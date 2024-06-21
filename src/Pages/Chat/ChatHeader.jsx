@@ -14,7 +14,7 @@ export const ChatHeader = ({ user, toggleSidebar }) => {
           alt={user.name}
           className="w-10 h-10 rounded-full object-cover"
         />
-        <span className="font-semibold text-lg">{user.name}</span>
+        <span className="font-semibold text-lg">{user.username}</span>
       </div>
     </div>
   );

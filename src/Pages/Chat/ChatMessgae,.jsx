@@ -1,43 +1,79 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { db } from "../../Service/firebaseConfig";
+import {
+  collection,
+  query,
+  where,
+  onSnapshot,
+  addDoc,
+  orderBy,
+} from "firebase/firestore";
+import { useSelector } from "react-redux";
 
-export const ChatMessages = ({ user }) => {
-  const [newMessage, setNewMessage] = useState(""); // State để lưu trữ nội dung tin nhắn mới
-  const [messages, setMessages] = useState([
-    { id: 1, text: "Hello!", sender: user.name },
-    { id: 2, text: "How are you?", sender: "You" },
-    { id: 3, text: "I'm good, thank you!", sender: user.name },
-  ]);
+export const ChatMessages = ({ roomId }) => {
+  console.log("roomId", roomId);
+  const [messages, setMessages] = useState([]);
+  const [newMessage, setNewMessage] = useState("");
+  const currentUser = useSelector((state) => state?.user?.user?.currentUser);
+
+  useEffect(() => {
+    if (!roomId) return;
+
+    const q = query(
+      collection(db, "messages"),
+      where("roomId", "==", roomId),
+      orderBy("timestamp")
+    );
+
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      console.log(snapshot);
+      const fetchedMessages = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setMessages(fetchedMessages);
+    });
+
+    return () => unsubscribe();
+  }, []);
+  console.log(messages);
+  const handleSendMessage = async () => {
+    if (newMessage.trim() === "") return;
+
+    try {
+      await addDoc(collection(db, "messages"), {
+        text: newMessage,
+        sender: currentUser?.username,
+        roomId: roomId,
+        timestamp: new Date(),
+      });
+      setNewMessage("");
+    } catch (error) {
+      console.error("Error sending message: ", error);
+    }
+  };
 
   const handleMessageChange = (e) => {
     setNewMessage(e.target.value);
   };
-
-  const handleSendMessage = () => {
-    if (newMessage.trim() !== "") {
-      // Chỉ gửi tin nhắn nếu nội dung không trống
-      const newMsg = {
-        id: messages.length + 1,
-        text: newMessage,
-        sender: "You",
-      };
-      setMessages([...messages, newMsg]);
-      setNewMessage(""); // Xóa nội dung tin nhắn trong input sau khi gửi
-    }
-  };
-
+  console.log(messages);
   return (
     <div className="flex flex-col flex-1">
-      <div className="flex-1 p-4 overflow-y-auto bg-gray-100">
+      <div className="flex-1 p-4 h-screen overflow-y-auto bg-gray-100">
         {messages.map((msg) => (
           <div
             key={msg.id}
             className={`mb-4 flex ${
-              msg.sender === "You" ? "justify-end" : "justify-start"
+              msg.sender === currentUser.username
+                ? "justify-end"
+                : "justify-start"
             }`}
           >
             <div
               className={`p-2 rounded-lg ${
-                msg.sender === "You" ? "bg-blue-500 text-white" : "bg-white text-gray-800"
+                msg.sender === currentUser.username
+                  ? "bg-blue-500 text-white"
+                  : "bg-white text-gray-800"
               }`}
             >
               {msg.text}
@@ -65,3 +101,5 @@ export const ChatMessages = ({ user }) => {
     </div>
   );
 };
+
+export default ChatMessages;
