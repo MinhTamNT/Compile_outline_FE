@@ -1,16 +1,10 @@
 import React, { useState } from "react";
+import { useSelector } from "react-redux";
 
 export const Profile = () => {
   const [isEditing, setIsEditing] = useState(false);
-  const [userInfo, setUserInfo] = useState({
-    username: "dthanh123",
-    avatarUser:
-      "https://scontent.fsgn8-4.fna.fbcdn.net/v/t1.6435-9/47262838_2138678889505178_8494951695191638016_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=5f2048&_nc_ohc=HM54JaB5WLIQ7kNvgFWw27A&_nc_ht=scontent.fsgn8-4.fna&oh=00_AYATUeqOQ5-34JKnN1f4svJ057EJQgSTqpng13XOGILekA&oe=667BE682",
-    email: "dhthanh123@gmai.com",
-    phone: "+8434567890",
-    address: "123 Main St, City, Country",
-    role: "Giao Vien",
-  });
+  const user = useSelector((state) => state?.user?.user?.currentUser);
+  const [userInfo, setUserInfo] = useState(user);
 
   const toggleEdit = () => {
     setIsEditing(!isEditing);
@@ -37,7 +31,7 @@ export const Profile = () => {
         <div className="p-8 lg:flex lg:items-center">
           <div className="lg:w-1/3 text-center lg:py-12 lg:border-r">
             <img
-              src={userInfo.avatarUser}
+              src={userInfo.avatar}
               alt="avatar-user"
               className="rounded-full w-32 h-32 mx-auto mb-4 lg:mb-0 lg:w-48 lg:h-48 object-cover border-4 border-blue-500"
             />
@@ -45,7 +39,9 @@ export const Profile = () => {
             <p className="text-sm text-gray-500">{userInfo.role}</p>
           </div>
           <div className="lg:w-2/3 p-4">
-            <h2 className="text-3xl font-semibold mb-4">Thông Tin Người Dùng</h2>
+            <h2 className="text-3xl font-semibold mb-4">
+              Thông Tin Người Dùng
+            </h2>
             {infoFields.map((field) => (
               <div key={field.name} className="mb-4">
                 <label

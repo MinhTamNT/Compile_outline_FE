@@ -6,11 +6,13 @@ import * as Yup from "yup";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Loading } from "../../components/Loading/Loading";
+import { useDispatch } from "react-redux";
+import { loginUser } from "../../Redux/apiRequeust";
 
 export const Login = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-
+  const dispatch = useDispatch();
   const formik = useFormik({
     initialValues: {
       username: "",
@@ -20,22 +22,24 @@ export const Login = () => {
       username: Yup.string()
         .max(15, "Phải ít hơn hoặc bằng 15 ký tự")
         .required("Vui lòng nhập tên tài khoản"),
-      password: Yup.string()
-        .min(8, "Phải có ít nhất 8 ký tự")
-        .required("Vui lòng nhập mật khẩu"),
+      password: Yup.string().required("Vui lòng nhập mật khẩu"),
     }),
-    onSubmit: (values, { setSubmitting }) => {
+    onSubmit: async (values, { setSubmitting }) => {
       setSubmitting(true);
       setLoading(true);
-      setTimeout(() => {
-        if (values.username === "admin" && values.password === "12345678") {
-          navigate("/");
-        } else {
-          toast.error("Tên tài khoản hoặc mật khẩu không đúng");
-          setSubmitting(false);
-          setLoading(false);
-        }
-      }, 2000);
+      try {
+        const user = {
+          username: values.username,
+          password: values.password,
+        };
+        await loginUser(user, dispatch); // Sử dụng await để đợi loginUser hoàn thành
+        navigate("/"); // Chuyển hướng đến trang chủ sau khi đăng nhập thành công
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+        setSubmitting(false); // Đặt lại trạng thái của form sau khi hoàn thành
+      }
     },
   });
 

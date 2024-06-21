@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Typography, Menu, MenuItem, Avatar, IconButton } from "@mui/material";
 import { AccountCircle, Logout, ChatBubbleOutline } from "@mui/icons-material";
 import { AiOutlineMessage } from "react-icons/ai";
+import { useSelector } from "react-redux";
 export const Header = () => {
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -14,14 +15,10 @@ export const Header = () => {
     setAnchorEl(null);
   };
 
-  const user = {
-    avatarUser:
-      "https://scontent.fsgn8-4.fna.fbcdn.net/v/t1.6435-9/47262838_2138678889505178_8494951695191638016_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=5f2048&_nc_ohc=HM54JaB5WLIQ7kNvgFWw27A&_nc_ht=scontent.fsgn8-4.fna&oh=00_AYATUeqOQ5-34JKnN1f4svJ057EJQgSTqpng13XOGILekA&oe=667BE682",
-    firstName: "Dương Hữu",
-    lastName: "Thành",
-    role: "giangvien",
-  };
-
+  const user = useSelector((state) => state?.user?.user?.currentUser);
+  console.log("====================================");
+  console.log(user);
+  console.log("====================================");
   return (
     <header className="bg-gradient-to-r from-blue-500 to-gray-300 text-white shadow-lg">
       <div className="container mx-auto flex justify-between items-center py-4 px-6 relative">
@@ -44,7 +41,7 @@ export const Header = () => {
               onClick={handleProfileClick}
             >
               <Avatar
-                src={user.avatarUser}
+                src={user.avatar}
                 alt="avatar-user"
                 className="cursor-pointer transition-transform transform hover:scale-105"
               />

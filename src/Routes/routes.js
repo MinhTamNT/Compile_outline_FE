@@ -10,7 +10,6 @@ export const RouteCompileoutline = [
   {
     path: config.route.home,
     component: Home,
-    isAuthencatied: true,
   },
   {
     path: config.route.login,

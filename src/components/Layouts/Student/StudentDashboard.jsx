@@ -105,7 +105,7 @@ export const StudentDashboard = () => {
 
         <div className="bg-white p-6 rounded-lg shadow-lg mb-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="flex flex-col md:flex-row md:col-span-3 items-center">
+            <div className="flex flex-col md:flex-row md:col-span-3 md:items-center">
               <div className="flex-grow">
                 <label
                   htmlFor="search"

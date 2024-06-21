@@ -3,11 +3,15 @@ import "./App.css";
 import { RouteCompileoutline } from "./Routes/routes";
 import { LayoutDefault } from "./components/LayoutDefault/LayoutDefault";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { RequiredAuth } from "./components/RequriedAuth/RequriedAuth";
+import Login from "./Pages/Login/Login";
+
 function App() {
   return (
     <Router>
       <div className="App">
         <Routes>
+          <Route path="/login" element={<Login />} />
           {RouteCompileoutline.map((route, index) => {
             const Page = route.component;
             const Layout =
@@ -17,7 +21,11 @@ function App() {
                 key={index}
                 path={route.path}
                 element={
-                  <Layout>{route.isAuthencatied ? <Page /> : <Page />}</Layout>
+                  <RequiredAuth>
+                    <Layout>
+                      <Page />
+                    </Layout>
+                  </RequiredAuth>
                 }
               />
             );
