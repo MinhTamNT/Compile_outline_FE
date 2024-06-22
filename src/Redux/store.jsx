@@ -1,4 +1,8 @@
-import { configureStore, combineReducers } from "@reduxjs/toolkit";
+import {
+  configureStore,
+  combineReducers,
+  createAsyncThunk,
+} from "@reduxjs/toolkit";
 import authReducer from "./authSlice";
 import {
   persistStore,
@@ -25,11 +29,18 @@ const combinedReducer = combineReducers({
 });
 
 const rootReducer = (state, action) => {
-  if (action.type === "auth/logoutSuccess") {
-    state = undefined;
+  if (action.type === "logout/LOGOUT") {
+    return combinedReducer(undefined, action);
   }
   return combinedReducer(state, action);
 };
+
+export const logout = createAsyncThunk(
+  "auth/logout",
+  async function (_payload, thunkAPI) {
+    thunkAPI.dispatch({ type: "logout/LOGOUT" });
+  }
+);
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 export const store = configureStore({

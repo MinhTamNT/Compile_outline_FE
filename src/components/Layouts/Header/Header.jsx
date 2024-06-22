@@ -1,12 +1,14 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Typography, Menu, MenuItem, Avatar, IconButton } from "@mui/material";
-import { AccountCircle, Logout, ChatBubbleOutline } from "@mui/icons-material";
+import { AccountCircle, Logout } from "@mui/icons-material";
 import { AiOutlineMessage } from "react-icons/ai";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../../../Redux/store";
 export const Header = () => {
   const [anchorEl, setAnchorEl] = useState(null);
-
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const handleProfileClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -14,11 +16,11 @@ export const Header = () => {
   const handleProfileClose = () => {
     setAnchorEl(null);
   };
-
+  const handlerLogout = () => {
+    dispatch(logout());
+    navigate("/login");
+  };
   const user = useSelector((state) => state?.user?.user?.currentUser);
-  console.log("====================================");
-  console.log(user);
-  console.log("====================================");
   return (
     <header className="bg-gradient-to-r from-blue-500 to-gray-300 text-white shadow-lg">
       <div className="container mx-auto flex justify-between items-center py-4 px-6 relative">
@@ -41,12 +43,12 @@ export const Header = () => {
               onClick={handleProfileClick}
             >
               <Avatar
-                src={user.avatar}
+                src={user?.avatar}
                 alt="avatar-user"
                 className="cursor-pointer transition-transform transform hover:scale-105"
               />
               <p className="transition-opacity hover:opacity-80 hidden md:block">
-                {user.firstName} {user.lastName}
+                {user?.firstName} {user?.lastName}
               </p>
             </button>
             <Menu
@@ -84,7 +86,7 @@ export const Header = () => {
                 </Typography>
               </MenuItem>
               <MenuItem
-                onClick={handleProfileClose}
+                onClick={handlerLogout}
                 sx={{
                   "&:hover": {
                     backgroundColor: "#e2e8f0",

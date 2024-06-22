@@ -10,7 +10,7 @@ export const Home = () => {
     setIsCheck(false);
   };
   useEffect(() => {
-    if (user?.dateJoined === null) {
+    if (user?.dateJoined === null || user?.dateJoined === "N/A") {
       setIsCheck(true);
     }
   }, [user]);

@@ -13,6 +13,7 @@ import { authApi, endpoints } from "../../Service/ApiConfig";
 
 export const RequiredAuth = ({ children }) => {
   const accessToken = useSelector((state) => state?.auth?.accessToken);
+  console.log(accessToken);
   const dispatch = useDispatch();
   useEffect(() => {
     const fetchCurrentUser = async () => {
@@ -32,7 +33,7 @@ export const RequiredAuth = ({ children }) => {
     if (accessToken) {
       fetchCurrentUser();
     }
-  }, [accessToken]);
+  }, [accessToken, dispatch]);
 
   return accessToken ? children : <Navigate to="/login" />;
 };
