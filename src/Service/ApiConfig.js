@@ -5,6 +5,7 @@ const BASE_URL = "http://localhost:8080/CompileOutline/";
 export const endpoints = {
   login: "/api/login/",
   "current-user": "/api/current-user/",
+  "change-required": "/api/change-required/",
 };
 
 export const authApi = (accessToken) => {

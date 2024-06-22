@@ -8,6 +8,11 @@ const userSlice = createSlice({
       pending: false,
       error: false,
     },
+    updateUser: {
+      currentUser: null,
+      pending: false,
+      error: false,
+    },
   },
   reducers: {
     getCurrentUserStart: (state) => {
@@ -20,6 +25,16 @@ const userSlice = createSlice({
     getCurrentUserFail: (state) => {
       state.user.error = true;
     },
+    updateUserStart: (state) => {
+      state.user.pending = true;
+    },
+    updateUserSuccess: (state, action) => {
+      state.user.pending = false;
+      state.user.currentUser = action.payload;
+    },
+    updateUserFail: (state) => {
+      state.user.error = true;
+    },
   },
 });
 
@@ -27,6 +42,9 @@ export const {
   getCurrentUserFail,
   getCurrentUserStart,
   getCurrentUserSuccess,
+  updateUserFail,
+  updateUserStart,
+  updateUserSuccess,
 } = userSlice.actions;
 
 export default userSlice.reducer;

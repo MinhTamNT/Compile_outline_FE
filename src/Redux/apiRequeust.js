@@ -1,5 +1,10 @@
-import { API, endpoints } from "../Service/ApiConfig";
+import { API, authApi, endpoints } from "../Service/ApiConfig";
 import { loginUserStart, loginUserSuccess } from "./authSlice";
+import {
+  updateUserFail,
+  updateUserStart,
+  updateUserSuccess,
+} from "./userSlice";
 
 export const loginUser = async (user, dispatch) => {
   dispatch(loginUserStart());
@@ -8,5 +13,24 @@ export const loginUser = async (user, dispatch) => {
     dispatch(loginUserSuccess(res.data));
   } catch (error) {
     console.log(error);
+  }
+};
+
+export const updateUser = async (updateUser, dispatch, accessToken) => {
+  dispatch(updateUserStart());
+  try {
+    const res = await authApi(accessToken).post(
+      endpoints["change-required"],
+      updateUser,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+    dispatch(updateUserSuccess(res.data));
+  } catch (error) {
+    console.log(error);
+    dispatch(updateUserFail());
   }
 };
