@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 export const ChatUserList = ({ users, onUserSelect }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredUsers, setFilteredUsers] = useState([]);
-  const currentUser = useSelector((state) => state?.user?.user?.currentUser);
+  const currentUser = useSelector((state) => state?.user?.currentUser);
 
   useEffect(() => {
     const filtered = users.filter((user) =>
@@ -27,17 +27,14 @@ export const ChatUserList = ({ users, onUserSelect }) => {
         onChange={handleSearchInputChange}
       />
       {filteredUsers.map((user) => {
-        if (
-          currentUser?.username === user.username ||
-          user.role !== "ROLE_LECTURER"
-        ) {
+        if (currentUser?.username === user.username) {
           return null;
         }
         return (
           <button
             key={user.id}
             className="flex items-center p-4 bg-white rounded-lg shadow-md hover:bg-gray-100 transition duration-200 ease-in-out cursor-pointer w-full text-left"
-            onClick={() => onUserSelect(user)} 
+            onClick={() => onUserSelect(user)}
           >
             <img
               src={user.avatar}

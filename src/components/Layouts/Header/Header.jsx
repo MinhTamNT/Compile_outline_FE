@@ -20,7 +20,7 @@ export const Header = () => {
     dispatch(logout());
     navigate("/login");
   };
-  const user = useSelector((state) => state?.user?.user?.currentUser);
+  const user = useSelector((state) => state?.user?.currentUser);
   return (
     <header className="bg-gradient-to-r from-blue-500 to-gray-300 text-white shadow-lg">
       <div className="container mx-auto flex justify-between items-center py-4 px-6 relative">

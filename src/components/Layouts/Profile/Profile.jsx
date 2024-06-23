@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 
 export const Profile = () => {
   const [isEditing, setIsEditing] = useState(false);
-  const user = useSelector((state) => state?.user?.user?.currentUser);
+  const user = useSelector((state) => state?.user?.currentUser);
   const [userInfo, setUserInfo] = useState(user);
 
   const toggleEdit = () => {

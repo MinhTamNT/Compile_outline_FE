@@ -14,7 +14,7 @@ export const ChatMessages = ({ roomId }) => {
   console.log("roomId", roomId);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
-  const currentUser = useSelector((state) => state?.user?.user?.currentUser);
+  const currentUser = useSelector((state) => state?.user?.currentUser);
 
   useEffect(() => {
     if (!roomId) return;

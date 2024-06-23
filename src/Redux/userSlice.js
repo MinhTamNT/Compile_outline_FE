@@ -3,37 +3,39 @@ import { createSlice } from "@reduxjs/toolkit";
 const userSlice = createSlice({
   name: "user",
   initialState: {
-    user: {
-      currentUser: null,
+    currentUser: null,
+    getUser: {
       pending: false,
       error: false,
     },
     updateUser: {
-      currentUser: null,
       pending: false,
       error: false,
     },
   },
   reducers: {
     getCurrentUserStart: (state) => {
-      state.user.pending = true;
+      state.getUser.pending = true;
     },
     getCurrentUserSuccess: (state, action) => {
-      state.user.pending = false;
-      state.user.currentUser = action.payload;
+      state.getUser.pending = false;
+      state.currentUser = action.payload;
     },
     getCurrentUserFail: (state) => {
-      state.user.error = true;
+      state.getUser.pending = false;
+      state.getUser.error = true;
     },
     updateUserStart: (state) => {
-      state.user.pending = true;
+      state.updateUser.pending = true;
+      state.updateUser.error = false; // Reset error state
     },
     updateUserSuccess: (state, action) => {
-      state.user.pending = false;
-      state.user.currentUser = action.payload;
+      state.updateUser.pending = false;
+      state.currentUser = action.payload; // Update currentUser as well
     },
     updateUserFail: (state) => {
-      state.user.error = true;
+      state.updateUser.pending = false;
+      state.updateUser.error = true;
     },
   },
 });

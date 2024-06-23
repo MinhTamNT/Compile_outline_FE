@@ -10,7 +10,7 @@ export const Chat = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [users, setUsers] = useState([]);
   const [currentRoomId, setCurrentRoomId] = useState(null);
-  const currentUser = useSelector((state) => state?.user?.user?.currentUser);
+  const currentUser = useSelector((state) => state?.user?.currentUser);
 
   const handleUserSelect = async (user) => {
     setSelectedUser(user);
