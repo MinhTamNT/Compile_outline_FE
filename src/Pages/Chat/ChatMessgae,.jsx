@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { db } from "../../Service/firebaseConfig";
 import {
+  getStorage,
+  ref,
+  uploadBytesResumable,
+  getDownloadURL,
+} from "firebase/storage";
+import {
   collection,
   query,
   where,
@@ -9,11 +15,12 @@ import {
   orderBy,
 } from "firebase/firestore";
 import { useSelector } from "react-redux";
+import { AiOutlinePicture } from "react-icons/ai";
 
 export const ChatMessages = ({ roomId }) => {
-  console.log("roomId", roomId);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
+  const [selectedImage, setSelectedImage] = useState(null);
   const currentUser = useSelector((state) => state?.user?.currentUser);
 
   useEffect(() => {
@@ -26,7 +33,6 @@ export const ChatMessages = ({ roomId }) => {
     );
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      console.log(snapshot);
       const fetchedMessages = snapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
@@ -35,18 +41,48 @@ export const ChatMessages = ({ roomId }) => {
     });
 
     return () => unsubscribe();
-  }, []);
-  console.log(messages);
+  }, [roomId]);
+
   const handleSendMessage = async () => {
-    if (newMessage.trim() === "") return;
+    if (!newMessage.trim() && !selectedImage) return;
 
     try {
-      await addDoc(collection(db, "messages"), {
-        text: newMessage,
-        sender: currentUser?.username,
-        roomId: roomId,
-        timestamp: new Date(),
-      });
+      if (selectedImage) {
+        const storage = getStorage();
+        const storageRef = ref(storage, `images/${selectedImage.name}`);
+        const uploadTask = uploadBytesResumable(storageRef, selectedImage);
+
+        uploadTask.on(
+          "state_changed",
+          (snapshot) => {
+            const progress =
+              (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            console.log(`Upload is ${progress}% done`);
+          },
+          (error) => {
+            console.error("Error uploading image: ", error);
+          },
+          async () => {
+            const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+            await addDoc(collection(db, "messages"), {
+              text: downloadURL,
+              sender: currentUser?.username,
+              roomId: roomId,
+              timestamp: new Date(),
+              isImage: true,
+            });
+            setSelectedImage(null);
+          }
+        );
+      } else {
+        await addDoc(collection(db, "messages"), {
+          text: newMessage,
+          sender: currentUser?.username,
+          roomId: roomId,
+          timestamp: new Date(),
+          isImage: false,
+        });
+      }
       setNewMessage("");
     } catch (error) {
       console.error("Error sending message: ", error);
@@ -56,9 +92,15 @@ export const ChatMessages = ({ roomId }) => {
   const handleMessageChange = (e) => {
     setNewMessage(e.target.value);
   };
-  console.log(messages);
+
+  const handleFileChange = (e) => {
+    if (e.target.files[0]) {
+      setSelectedImage(e.target.files[0]);
+    }
+  };
+
   return (
-    <div className="flex flex-col flex-1">
+    <div className="flex flex-col overflow-auto flex-1">
       <div className="flex-1 p-4 h-screen overflow-y-auto bg-gray-100">
         {messages.map((msg) => (
           <div
@@ -76,11 +118,24 @@ export const ChatMessages = ({ roomId }) => {
                   : "bg-white text-gray-800"
               }`}
             >
-              {msg.text}
+              {msg.isImage ? (
+                <img src={msg.text} alt="Sent Image" className="rounded h-60" />
+              ) : (
+                <span>{msg.text}</span>
+              )}
             </div>
           </div>
         ))}
       </div>
+      {selectedImage && (
+        <div className="mr-2">
+          <img
+            src={URL.createObjectURL(selectedImage)}
+            alt="Selected"
+            className="h-20 rounded"
+          />
+        </div>
+      )}
       <div className="p-4 bg-white">
         <div className="flex items-center">
           <input
@@ -89,6 +144,17 @@ export const ChatMessages = ({ roomId }) => {
             value={newMessage}
             onChange={handleMessageChange}
             className="flex-1 p-2 border rounded-md mr-2 focus:outline-none focus:ring focus:ring-blue-500"
+          />
+
+          <label htmlFor="file-input" className="cursor-pointer mr-2">
+            <AiOutlinePicture size={32} />
+          </label>
+          <input
+            type="file"
+            id="file-input"
+            accept="image/*"
+            onChange={handleFileChange}
+            className="hidden"
           />
           <button
             onClick={handleSendMessage}
