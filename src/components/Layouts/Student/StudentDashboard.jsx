@@ -1,95 +1,109 @@
-import React, { useState } from "react";
-
-const courses = [
-  {
-    id: 1,
-    department: "Khoa học máy tính",
-    year: 2023,
-    title: "Cấu trúc dữ liệu",
-    instructor: "Nguyễn Văn A",
-    semester: "Học kỳ 1",
-  },
-  {
-    id: 2,
-    department: "Khoa học máy tính",
-    year: 2024,
-    title: "Thuật toán",
-    instructor: "Trần Thị B",
-    semester: "Học kỳ 2",
-  },
-  {
-    id: 3,
-    department: "Toán học",
-    year: 2023,
-    title: "Giải tích I",
-    instructor: "Lê Văn C",
-    semester: "Học kỳ 1",
-  },
-  {
-    id: 4,
-    department: "Toán học",
-    year: 2024,
-    title: "Đại số tuyến tính",
-    instructor: "Phạm Thị D",
-    semester: "Học kỳ 2",
-  },
-];
-
-const departments = ["Khoa học máy tính", "Toán học"];
-const years = [2023, 2024];
+import React, { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
+import { authApi, endpoints } from "../../../Service/ApiConfig";
+import { useSelector } from "react-redux";
 
 export const StudentDashboard = () => {
-  const [selectedDepartment, setSelectedDepartment] = useState("");
   const [selectedYear, setSelectedYear] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
-  const [filteredCourses, setFilteredCourses] = useState(courses);
+  const [lecturerQuery, setLecturerQuery] = useState("");
+  const [creditsQuery, setCreditsQuery] = useState("");
+  const [filteredCourses, setFilteredCourses] = useState([]);
   const [activeFilters, setActiveFilters] = useState([]);
+  const [courses, setCourses] = useState([]);
+  const [searchParams] = useSearchParams();
+  const [isLoading, setIsLoading] = useState(false);
+  const accessToken = useSelector((state) => state?.auth?.accessToken);
+
+  // Calculate the list of years dynamically
+  const currentYear = new Date().getFullYear();
+  const years = Array.from({ length: 5 }, (_, i) => currentYear - i).reverse();
+
+  useEffect(() => {
+    const getSpecification = async () => {
+      setIsLoading(true);
+      try {
+        let url = `${endpoints["specification"]}?subjectName=${
+          searchParams.get("subjectName") || ""
+        }&year=${searchParams.get("year") || ""}&credits=${
+          searchParams.get("credits") || ""
+        }&lecturerName=${searchParams.get("lecturerName") || ""}`;
+        const response = await authApi(accessToken).get(url);
+        setCourses(response.data);
+        setFilteredCourses(response.data);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    getSpecification();
+  }, [searchParams]);
+
   const handleSearch = () => {
     const results = courses.filter((course) => {
+      const courseYears = course.years.map((y) => y.year);
       return (
-        (selectedDepartment
-          ? course.department === selectedDepartment
-          : true) &&
-        (selectedYear ? course.year == selectedYear : true) &&
+        (selectedYear ? courseYears.includes(parseInt(selectedYear)) : true) &&
         (searchQuery
-          ? course.title.toLowerCase().includes(searchQuery.toLowerCase())
-          : true)
+          ? course.subject.toLowerCase().includes(searchQuery.toLowerCase())
+          : true) &&
+        (lecturerQuery
+          ? course.lecturerName
+              .toLowerCase()
+              .includes(lecturerQuery.toLowerCase())
+          : true) &&
+        (creditsQuery ? course.credits === parseInt(creditsQuery) : true)
       );
     });
 
     const newFilters = [];
-    if (selectedDepartment)
-      newFilters.push({ type: "department", value: selectedDepartment });
     if (selectedYear) newFilters.push({ type: "year", value: selectedYear });
     if (searchQuery) newFilters.push({ type: "search", value: searchQuery });
+    if (lecturerQuery)
+      newFilters.push({ type: "lecturer", value: lecturerQuery });
+    if (creditsQuery) newFilters.push({ type: "credits", value: creditsQuery });
 
     setFilteredCourses(results);
     setActiveFilters(newFilters);
   };
 
   const handleRemoveFilter = (filter) => {
-    if (filter.type === "department") setSelectedDepartment("");
     if (filter.type === "year") setSelectedYear("");
     if (filter.type === "search") setSearchQuery("");
+    if (filter.type === "lecturer") setLecturerQuery("");
+    if (filter.type === "credits") setCreditsQuery("");
 
     const newFilters = activeFilters.filter((f) => f.type !== filter.type);
     setActiveFilters(newFilters);
 
     const results = courses.filter((course) => {
+      const courseYears = course.years.map((y) => y.year);
       return (
-        (newFilters.find((f) => f.type === "department")
-          ? course.department ===
-            newFilters.find((f) => f.type === "department").value
-          : true) &&
         (newFilters.find((f) => f.type === "year")
-          ? course.year == newFilters.find((f) => f.type === "year").value
+          ? courseYears.includes(
+              parseInt(newFilters.find((f) => f.type === "year").value)
+            )
           : true) &&
         (newFilters.find((f) => f.type === "search")
-          ? course.title
+          ? course.subject
               .toLowerCase()
               .includes(
                 newFilters.find((f) => f.type === "search").value.toLowerCase()
               )
+          : true) &&
+        (newFilters.find((f) => f.type === "lecturer")
+          ? course.lecturerName
+              .toLowerCase()
+              .includes(
+                newFilters
+                  .find((f) => f.type === "lecturer")
+                  .value.toLowerCase()
+              )
+          : true) &&
+        (newFilters.find((f) => f.type === "credits")
+          ? course.credits ===
+            parseInt(newFilters.find((f) => f.type === "credits").value)
           : true)
       );
     });
@@ -134,27 +148,6 @@ export const StudentDashboard = () => {
             </div>
             <div>
               <label
-                htmlFor="department"
-                className="block mb-2 text-sm font-medium text-gray-700"
-              >
-                Theo Khoa
-              </label>
-              <select
-                id="department"
-                className="block w-full mt-1 px-4 py-2 rounded-lg border-2 border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                value={selectedDepartment}
-                onChange={(e) => setSelectedDepartment(e.target.value)}
-              >
-                <option value="">Tất cả các khoa</option>
-                {departments.map((dept) => (
-                  <option key={dept} value={dept}>
-                    {dept}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label
                 htmlFor="year"
                 className="block mb-2 text-sm font-medium text-gray-700"
               >
@@ -174,6 +167,38 @@ export const StudentDashboard = () => {
                 ))}
               </select>
             </div>
+            <div>
+              <label
+                htmlFor="lecturer"
+                className="block mb-2 text-sm font-medium text-gray-700"
+              >
+                Theo Giảng Viên
+              </label>
+              <input
+                type="text"
+                id="lecturer"
+                className="block w-full mt-1 px-4 py-2 rounded-lg border-2 border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                placeholder="Nhập tên giảng viên"
+                value={lecturerQuery}
+                onChange={(e) => setLecturerQuery(e.target.value)}
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="credits"
+                className="block mb-2 text-sm font-medium text-gray-700"
+              >
+                Theo Tín Chỉ
+              </label>
+              <input
+                type="number"
+                id="credits"
+                className="block w-full mt-1 px-4 py-2 rounded-lg border-2 border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                placeholder="Nhập số tín chỉ"
+                value={creditsQuery}
+                onChange={(e) => setCreditsQuery(e.target.value)}
+              />
+            </div>
           </div>
         </div>
 
@@ -184,12 +209,15 @@ export const StudentDashboard = () => {
                 key={index}
                 className="flex items-center bg-blue-200 text-blue-800 text-sm font-semibold px-4 py-2 rounded-full"
               >
-                {filter.type === "department" && (
-                  <span>Khoa: {filter.value}</span>
-                )}
                 {filter.type === "year" && <span>Năm: {filter.value}</span>}
                 {filter.type === "search" && (
                   <span>Tìm kiếm: {filter.value}</span>
+                )}
+                {filter.type === "lecturer" && (
+                  <span>Giảng viên: {filter.value}</span>
+                )}
+                {filter.type === "credits" && (
+                  <span>Tín chỉ: {filter.value}</span>
                 )}
                 <button
                   onClick={() => handleRemoveFilter(filter)}
@@ -206,18 +234,26 @@ export const StudentDashboard = () => {
           <h2 className="text-2xl font-bold text-blue-800 mb-4">
             Đề Cương Môn Học
           </h2>
-          {filteredCourses.length > 0 ? (
+          {isLoading ? (
+            <p className="text-gray-500">Đang tải...</p>
+          ) : filteredCourses.length > 0 ? (
             <ul className="space-y-4">
               {filteredCourses.map((course) => (
                 <li key={course.id} className="border-b pb-2 last:border-b-0">
                   <div className="flex justify-between items-center">
                     <div>
-                      <p className="text-lg font-medium">{course.title}</p>
-                      <p className="text-sm text-gray-600">
-                        {course.department} - {course.year} - {course.semester}
+                      <p className="text-lg font-medium">
+                        Đề cương môn học : {course.subject}
                       </p>
                       <p className="text-sm text-gray-600">
-                        Giảng viên: {course.instructor}
+                        Năm áp dụng :{" "}
+                        {course.years.map((y) => y.year).join("-")}
+                      </p>
+                      <p className="text-sm text-gray-600">
+                        Giảng viên: {course.lecturerName}
+                      </p>
+                      <p className="text-sm text-gray-600">
+                        Tín chỉ: {course.credits}
                       </p>
                     </div>
                   </div>

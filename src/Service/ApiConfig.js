@@ -6,6 +6,7 @@ export const endpoints = {
   login: "/api/login/",
   "current-user": "/api/current-user/",
   "change-required": "/api/change-required/",
+  specification: "/api/specification/",
 };
 
 export const authApi = (accessToken) => {
