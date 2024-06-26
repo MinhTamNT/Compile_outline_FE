@@ -8,6 +8,7 @@ export const endpoints = {
   "change-required": "/api/change-required/",
   specification: "/api/specification/",
   "specification-detail": (specId) => `/api/specification/${specId}`,
+  "comment-specifcation": (specId) => `/api/feedback/${specId}`,
 };
 
 export const authApi = (accessToken) => {

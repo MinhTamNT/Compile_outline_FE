@@ -1,9 +1,6 @@
 import React from "react";
 
 export const Ratting = ({ ratting }) => {
-  console.log("====================================");
-  console.log(ratting);
-  console.log("====================================");
   return (
     <div>
       <div className="overflow-x-auto">

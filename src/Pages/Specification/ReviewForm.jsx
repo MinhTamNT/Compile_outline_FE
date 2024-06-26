@@ -5,7 +5,6 @@ const ReviewForm = () => {
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
 
-  // Xử lý khi thay đổi rating
   const handleRatingChange = (newRating) => {
     setRating(newRating);
   };
@@ -14,18 +13,18 @@ const ReviewForm = () => {
     setComment(event.target.value);
   };
 
-  // Xử lý khi submit form
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log("Rating:", rating);
-    console.log("Comment:", comment);
-    setRating(0);
-    setComment("");
+      try {
+        
+      } catch (error) {
+        
+      }
   };
 
   return (
     <div className="md:w-[900px] w-full md:mx-0 mx-auto mt-8 bg-white p-6 rounded-lg shadow-md">
-      <h2 className="text-xl font-bold mb-4">Đánh giá sản đề cương</h2>
+      <h2 className="text-xl font-bold mb-4">Đánh giá đề cương</h2>
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
           <label

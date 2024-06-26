@@ -5,13 +5,17 @@ import ReviewForm from "./ReviewForm";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { authApi, endpoints } from "../../Service/ApiConfig";
+import Rating from "@mui/material/Rating";
 
 export const SpecificationDetail = () => {
+  const { id } = useParams();
   const [showJumpToReviews, setShowJumpToReviews] = useState(false);
   const [showBackToTop, setShowBackToTop] = useState(false);
-  const [specification, setSpecification] = useState(false);
-  const { id } = useParams();
+  const [specification, setSpecification] = useState(null);
+  const [comments, setComments] = useState([]);
+  const [refresh, setRefresh] = useState(false);
   const accessToken = useSelector((state) => state?.auth?.accessToken);
+
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 300) {
@@ -28,7 +32,7 @@ export const SpecificationDetail = () => {
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, [window.scrollY > 300]);
+  }, []);
 
   const handleJumpToReviews = () => {
     const reviewsSection = document.getElementById("review-section");
@@ -45,7 +49,7 @@ export const SpecificationDetail = () => {
   };
 
   useEffect(() => {
-    const getSpecificatonDetail = async () => {
+    const getSpecificationDetail = async () => {
       try {
         const res = await authApi(accessToken).get(
           endpoints["specification-detail"](id)
@@ -55,8 +59,22 @@ export const SpecificationDetail = () => {
         console.log(error);
       }
     };
-    getSpecificatonDetail();
+    getSpecificationDetail();
   }, [id]);
+
+  useEffect(() => {
+    const fetchComments = async () => {
+      try {
+        const res = await authApi(accessToken).get(
+          endpoints["comment-specifcation"](id)
+        );
+        setComments(res.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchComments();
+  }, [refresh, id, accessToken]);
 
   return (
     <div className="p-2 min-h-screen bg-white">
@@ -91,31 +109,46 @@ export const SpecificationDetail = () => {
             <ReviewForm />
             <div className="bg-white rounded-lg shadow-md p-4">
               <h3 className="text-lg font-semibold mb-2">Danh sách đánh giá</h3>
-              {/* Ví dụ danh sách đánh giá */}
-              <div className="border-t border-gray-200 py-4">
-                <div className="flex items-center mb-2">
-                  <div className="mr-2">
-                    <img
-                      src="https://randomuser.me/api/portraits/men/1.jpg"
-                      alt="Avatar"
-                      className="rounded-full w-10 h-10"
-                    />
-                  </div>
-                  <div>
-                    <p className="font-semibold">Người dùng A</p>
-                    <div className="flex items-center mt-1">
-                      <span className="mr-1 text-yellow-500">★★★★☆</span>
-                      <span className="text-gray-500 text-sm">
-                        5 phút trước
-                      </span>
+              {comments?.map((comment) => (
+                <div
+                  className={`border-t border-gray-200 py-4 ${
+                    comment?.classify === "negative" ? "blur-sm" : ""
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center mb-2">
+                      <div className="mr-2">
+                        <img
+                          src={comment?.profile?.avatar}
+                          alt="Avatar"
+                          className="rounded-full w-10 h-10"
+                        />
+                      </div>
+                      <div>
+                        <p className="font-semibold">
+                          {comment?.profile?.fullname}
+                        </p>
+                        <Rating
+                          name="read-only"
+                          value={comment.starts}
+                          readOnly
+                        />
+                      </div>
                     </div>
+                    {comment?.classify === "negative" ? (
+                      <p className="text-red-500">Tiêu cực</p>
+                    ) : comment?.classify === "positive" ? (
+                      <p className="text-green-500">Tích cực</p>
+                    ) : (
+                      <p className="text-gray-500">Bình thường</p>
+                    )}
                   </div>
+                  <p className="text-gray-700">{comment?.content}</p>
+                  {comment?.classify === "negative" && (
+                    <p className="text-red-500">Cảnh báo: Nội dung tiêu cực</p>
+                  )}
                 </div>
-                <p className="text-gray-700">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Pellentesque eget viverra nisl.
-                </p>
-              </div>
+              ))}
             </div>
           </div>
         </div>

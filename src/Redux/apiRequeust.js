@@ -1,6 +1,11 @@
 import { API, authApi, endpoints } from "../Service/ApiConfig";
 import { loginUserStart, loginUserSuccess } from "./authSlice";
 import {
+  commentSpecificationFail,
+  commentSpecificationStart,
+  commentSpecificationSuccess,
+} from "./commentSLice";
+import {
   updateUserFail,
   updateUserStart,
   updateUserSuccess,
@@ -32,5 +37,24 @@ export const updateUser = async (updateUser, dispatch, accessToken) => {
   } catch (error) {
     console.log(error);
     dispatch(updateUserFail());
+  }
+};
+
+export const commentSpecification = async (
+  accessToken,
+  newComment,
+  dispatch,
+  specId
+) => {
+  dispatch(commentSpecificationStart());
+  try {
+    const res = await authApi(accessToken).post(
+      endpoints["comment-specifcation"](specId),
+      newComment
+    );
+    dispatch(commentSpecificationSuccess(res.data));
+  } catch (error) {
+    console.log(error);
+    dispatch(commentSpecificationFail());
   }
 };
