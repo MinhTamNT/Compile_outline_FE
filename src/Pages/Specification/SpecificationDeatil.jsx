@@ -2,11 +2,16 @@ import React, { useState, useEffect } from "react";
 import { SpecificationHeader } from "./SpecificationHeader";
 import { SpecificationContent } from "./SpecificationContent";
 import ReviewForm from "./ReviewForm";
+import { useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { authApi, endpoints } from "../../Service/ApiConfig";
 
 export const SpecificationDetail = () => {
   const [showJumpToReviews, setShowJumpToReviews] = useState(false);
   const [showBackToTop, setShowBackToTop] = useState(false);
-
+  const [specification, setSpecification] = useState(false);
+  const { id } = useParams();
+  const accessToken = useSelector((state) => state?.auth?.accessToken);
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 300) {
@@ -23,7 +28,7 @@ export const SpecificationDetail = () => {
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, []);
+  }, [window.scrollY > 300]);
 
   const handleJumpToReviews = () => {
     const reviewsSection = document.getElementById("review-section");
@@ -39,11 +44,25 @@ export const SpecificationDetail = () => {
     });
   };
 
+  useEffect(() => {
+    const getSpecificatonDetail = async () => {
+      try {
+        const res = await authApi(accessToken).get(
+          endpoints["specification-detail"](id)
+        );
+        setSpecification(res.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getSpecificatonDetail();
+  }, [id]);
+
   return (
     <div className="p-2 min-h-screen bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <SpecificationHeader />
-        <SpecificationContent />
+        <SpecificationContent specification={specification} />
       </div>
       <div className="max-w-7xl mx-auto mt-8 px-4 sm:px-6 lg:px-8">
         <button

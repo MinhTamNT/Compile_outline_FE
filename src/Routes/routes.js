@@ -29,7 +29,7 @@ export const RouteCompileoutline = [
     layout: null,
   },
   {
-    path: config.route.specification,
+    path: `${config.route.specification}/:id`,
     component: SpecificationDetail,
   },
   {

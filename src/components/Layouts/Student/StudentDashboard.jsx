@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { authApi, endpoints } from "../../../Service/ApiConfig";
 import { useSelector } from "react-redux";
 
@@ -14,8 +14,7 @@ export const StudentDashboard = () => {
   const [searchParams] = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
   const accessToken = useSelector((state) => state?.auth?.accessToken);
-
-  // Calculate the list of years dynamically
+  const navigate = useNavigate();
   const currentYear = new Date().getFullYear();
   const years = Array.from({ length: 5 }, (_, i) => currentYear - i).reverse();
 
@@ -109,6 +108,10 @@ export const StudentDashboard = () => {
     });
 
     setFilteredCourses(results);
+  };
+
+  const handleNavSpecification = (specId) => {
+    navigate(`/specification/${specId}`);
   };
 
   return (
@@ -255,6 +258,12 @@ export const StudentDashboard = () => {
                       <p className="text-sm text-gray-600">
                         Tín chỉ: {course.credits}
                       </p>
+                      <button
+                        className="bg-blue-500 p-1 mt-2 text-white rounded-md"
+                        onClick={() => handleNavSpecification(course.id)}
+                      >
+                        Xem chi tiết
+                      </button>
                     </div>
                   </div>
                 </li>

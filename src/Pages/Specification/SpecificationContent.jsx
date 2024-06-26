@@ -1,8 +1,10 @@
 import React from "react";
-import CourseTable from "./RequirementSubject";
+import { CourseTable } from "./RequirementSubject";
 import Objective from "./Objective";
+import { OutComesSpecification } from "./OutCome";
+import { Ratting } from "./Ratting";
 
-export const SpecificationContent = () => {
+export const SpecificationContent = ({ specification }) => {
   return (
     <div className="flex flex-col h-full bg-white">
       <div className="information-specification">
@@ -11,25 +13,35 @@ export const SpecificationContent = () => {
         </h5>
         <p>1. Thông tin/Information </p>
         <div className="name-subject flex items-center">
-          <p className="mb-0">
-            Tên môn :<span className="font-bold mb-0"> Giải tích </span>
-          </p>
-          <p className="mb-0 me-2">
-            - Mã Môn học:
-            <span className="font-bold mb-0">MH1</span>
-          </p>
+          <div className="mb-0">
+            Tên môn :
+            <span className="font-bold mb-0 ml-2">
+              {specification?.subject?.subjectName}
+            </span>
+          </div>
+          <div className="mb-0 text-red-500 ml-2 me-2">
+            - Khoá áp dụng:
+            <span className="font-bold ml-2 mb-0">
+              {specification?.years?.map((year, index) => (
+                <span key={year.id}>
+                  {year.year}
+                  {index !== specification.years.length - 1 ? " - " : ""}
+                </span>
+              ))}
+            </span>
+          </div>
         </div>
         <div className="department-info mb-2 flex items-center">
           <p className="mb-0 me-2">Khoa phụ trách:</p>
-          <p className="font-bold mb-0">Công nghệ thông tin</p>
+          <p className="font-bold mb-0">{specification?.faculty}</p>
         </div>
         <div className="instructor-info mb-2 flex items-center">
           <p className="mb-0 me-2">Giáo viên biên soạn:</p>
-          <p className="font-bold mb-0">Dương Hữu Thành</p>
+          <p className="font-bold mb-0">{specification?.fullname}</p>
         </div>
         <div className="instructor-email mb-2 flex items-center">
           <p className="mb-0 me-2">Email của giảng viên:</p>
-          <p className="font-bold mb-0">duonghuuthanh@gmail.com</p>
+          <p className="font-bold mb-0">{specification?.email}</p>
         </div>
         <div className="flex items-center gap-2">
           <p>2. Số tín chỉ/Credits : </p>
@@ -41,7 +53,7 @@ export const SpecificationContent = () => {
             step="0.5"
             className="px-2"
             id="credits"
-            placeholder="1"
+            value={specification?.credits}
           />
         </div>
       </div>
@@ -51,30 +63,26 @@ export const SpecificationContent = () => {
         </h5>
         <p>1.Mô Tả Đề Cương</p>
         <div className="text-justify leading-relaxed border rounded-lg p-4 text-gray-700">
-          Môn Kỹ Thuật Lập Trình trang bị cho sinh viên một số kiến thức tiếp
-          theo về lập trình cấu trúc mà chưa được đề cập trong môn Cơ sở lập
-          trình. Nội dung môn học bao gồm: mảng nhiều chiều, đệ quy, con trỏ,
-          chuỗi ký tự, các kiểu dữ liệu tự tạo và các thao tác với tập tin. Nội
-          dung lập trình được dùng để minh họa là...
+          {specification?.description}
         </div>
       </div>
       <div className="mt-4">
         <p className="mb-2">2. Môn học điều kiện/Requirements:</p>
-        <CourseTable />
+        <CourseTable requirements={specification?.subjectRequirements} />
       </div>
       <div className="mt-4">
         <p className="mb-2">3. Mục tiêu môn học/Course objectives:</p>
-        <Objective />
+        <Objective objectiveSubject={specification?.objectives} />
       </div>
       <div className="mt-4">
         <p className="mb-2">
           4. Chuẩn đầu ra (CĐR) môn học – Course learning outcomes (CLOs)
         </p>
-        <Objective />
+        <OutComesSpecification outComes={specification?.outcomes} />
       </div>
       <div className="mt-4">
         <p className="mb-2">5.Điểm đánh giá/Rating:</p>
-        <Objective />
+        <Ratting ratting={specification?.specificationRatings} />
       </div>
     </div>
   );

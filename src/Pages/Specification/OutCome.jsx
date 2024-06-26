@@ -1,6 +1,6 @@
 import React from "react";
 
-const Objective = ({ objectiveSubject }) => {
+export const OutComesSpecification = ({ outComes }) => {
   return (
     <div className="overflow-x-auto">
       <table className="min-w-full divide-y divide-gray-200 border border-gray-300 shadow-md rounded-lg">
@@ -16,12 +16,12 @@ const Objective = ({ objectiveSubject }) => {
               scope="col"
               className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider"
             >
-              Mô tả mục tiêu môn học / Course objectives
+              Chuẩn đầu ra (CĐR) môn học – Course learning outcomes (CLOs)
             </th>
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
-          {objectiveSubject?.map((objective, index) => (
+          {outComes?.map((objective, index) => (
             <tr key={objective.id}>
               <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                 {index + 1}
@@ -36,5 +36,3 @@ const Objective = ({ objectiveSubject }) => {
     </div>
   );
 };
-
-export default Objective;
