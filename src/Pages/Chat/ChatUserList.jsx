@@ -27,7 +27,7 @@ export const ChatUserList = ({ users, onUserSelect }) => {
         onChange={handleSearchInputChange}
       />
       {filteredUsers.map((user) => {
-        if (currentUser?.username === user.username) {
+        if (currentUser?.username === user.username || user.role !== 'ROLE_LECTURER') {
           return null;
         }
         return (
@@ -43,7 +43,7 @@ export const ChatUserList = ({ users, onUserSelect }) => {
             />
             <div>
               <h2 className="text-lg font-semibold text-gray-800">
-                {user.username}
+                {user.fullname}
               </h2>
               <p className="text-sm text-gray-600">{user.status}</p>
             </div>

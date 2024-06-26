@@ -44,11 +44,12 @@ export const StudentDashboard = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredCourses, setFilteredCourses] = useState(courses);
   const [activeFilters, setActiveFilters] = useState([]);
-
   const handleSearch = () => {
     const results = courses.filter((course) => {
       return (
-        (selectedDepartment ? course.department === selectedDepartment : true) &&
+        (selectedDepartment
+          ? course.department === selectedDepartment
+          : true) &&
         (selectedYear ? course.year == selectedYear : true) &&
         (searchQuery
           ? course.title.toLowerCase().includes(searchQuery.toLowerCase())

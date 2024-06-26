@@ -5,6 +5,7 @@ import { Home } from "../Pages/Home/Home";
 import { Login } from "../Pages/Login/Login";
 import { Profile } from "../components/Layouts/Profile/Profile";
 import { ErrorPage } from "../Pages/Error/Error"; // Make sure to import your Error component
+import { SpecificationDetail } from "../Pages/Specification/SpecificationDeatil";
 
 export const RouteCompileoutline = [
   {
@@ -26,6 +27,10 @@ export const RouteCompileoutline = [
     path: config.route.chat,
     component: Chat,
     layout: null,
+  },
+  {
+    path: config.route.specification,
+    component: SpecificationDetail,
   },
   {
     path: "*",
