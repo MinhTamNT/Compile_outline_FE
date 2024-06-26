@@ -9,6 +9,7 @@ export const endpoints = {
   specification: "/api/specification/",
   "specification-detail": (specId) => `/api/specification/${specId}`,
   "comment-specifcation": (specId) => `/api/feedback/${specId}`,
+  "deleted-comment": (commentId) => `/api/feedback/${commentId}`,
 };
 
 export const authApi = (accessToken) => {

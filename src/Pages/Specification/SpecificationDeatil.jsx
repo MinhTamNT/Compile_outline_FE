@@ -74,7 +74,16 @@ export const SpecificationDetail = () => {
       }
     };
     fetchComments();
-  }, [refresh, id, accessToken]);
+  }, [refresh]);
+
+  const handleDeleteComment = async (commentId) => {
+    try {
+      await authApi(accessToken).delete(endpoints["deleted-comment"](commentId));
+      setRefresh(!refresh); // Trigger refresh
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div className="p-2 min-h-screen bg-white">
@@ -105,14 +114,16 @@ export const SpecificationDetail = () => {
           <h2 id="review-section" className="text-2xl font-bold mb-4">
             Đánh giá đề cương
           </h2>
-          <div className="grid grid-rows-1 md:grid-rows-2 gap-4">
-            <ReviewForm />
+          <div className="grid grid-rows-1 md:grid-rows-1 gap-4">
+            <ReviewForm specId={id} setRefresh={setRefresh} refresh={refresh} />
             <div className="bg-white rounded-lg shadow-md p-4">
               <h3 className="text-lg font-semibold mb-2">Danh sách đánh giá</h3>
               {comments?.map((comment) => (
                 <div
                   className={`border-t border-gray-200 py-4 ${
-                    comment?.classify === "negative" ? "blur-sm" : ""
+                    comment?.classify === "negative"
+                      ? "blur-sm  pointer-events-none"
+                      : ""
                   }`}
                 >
                   <div className="flex items-center justify-between">
@@ -135,17 +146,27 @@ export const SpecificationDetail = () => {
                         />
                       </div>
                     </div>
-                    {comment?.classify === "negative" ? (
-                      <p className="text-red-500">Tiêu cực</p>
-                    ) : comment?.classify === "positive" ? (
-                      <p className="text-green-500">Tích cực</p>
-                    ) : (
-                      <p className="text-gray-500">Bình thường</p>
-                    )}
+                    <div className="flex items-center gap-2">
+                      <button
+                        className="bg-red-400 p-2 rounded-md text-white"
+                        onClick={() => handleDeleteComment(comment?.id)}
+                      >
+                        Xoá
+                      </button>
+                      {comment?.classify === "negative" ? (
+                        <p className="text-red-500">Tiêu cực</p>
+                      ) : comment?.classify === "positive" ? (
+                        <p className="text-green-500">Tích cực</p>
+                      ) : (
+                        <p className="text-gray-500">Bình thường</p>
+                      )}
+                    </div>
                   </div>
                   <p className="text-gray-700">{comment?.content}</p>
                   {comment?.classify === "negative" && (
-                    <p className="text-red-500">Cảnh báo: Nội dung tiêu cực</p>
+                    <p className="text-red-500 pointer-events-none">
+                      Cảnh báo: Nội dung tiêu cực
+                    </p>
                   )}
                 </div>
               ))}

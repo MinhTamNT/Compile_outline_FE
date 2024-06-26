@@ -1,13 +1,14 @@
 import React, { useState } from "react";
-import Rating from "react-rating-stars-component";
+import Rating from "@mui/material/Rating";
+import { useDispatch, useSelector } from "react-redux";
+import { commentSpecification } from "../../Redux/apiRequeust";
 
-const ReviewForm = () => {
+const ReviewForm = ({ specId, setRefresh, refresh }) => {
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
-
-  const handleRatingChange = (newRating) => {
-    setRating(newRating);
-  };
+  const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
+  const token = useSelector((state) => state?.auth?.accessToken);
 
   const handleCommentChange = (event) => {
     setComment(event.target.value);
@@ -15,15 +16,23 @@ const ReviewForm = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-      try {
-        
-      } catch (error) {
-        
-      }
+    setLoading(true);
+    try {
+      const newComment = {
+        content: comment,
+        starts: rating,
+      };
+      await commentSpecification(token, newComment, dispatch, specId);
+      setRefresh(!refresh);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="md:w-[900px] w-full md:mx-0 mx-auto mt-8 bg-white p-6 rounded-lg shadow-md">
+    <div className="md:w-[900px] md:h-[300px] h-auto w-full md:mx-0 mx-auto mt-8 bg-white p-6 rounded-lg shadow-md">
       <h2 className="text-xl font-bold mb-4">Đánh giá đề cương</h2>
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
@@ -34,13 +43,11 @@ const ReviewForm = () => {
             Điểm đánh giá:
           </label>
           <Rating
-            id="rating"
-            count={5}
-            size={30}
+            name="simple-controlled"
             value={rating}
-            onChange={handleRatingChange}
-            activeColor="#FFD700"
-            className="mt-1"
+            onChange={(event, newValue) => {
+              setRating(newValue);
+            }}
           />
         </div>
         <div className="mb-4">
@@ -62,9 +69,12 @@ const ReviewForm = () => {
         </div>
         <button
           type="submit"
-          className="inline-block bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+          className={`inline-block bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 ${
+            loading ? "opacity-50 cursor-not-allowed" : ""
+          }`}
+          disabled={loading}
         >
-          Gửi đánh giá
+          {loading ? "Đang gửi..." : "Gửi đánh giá"}
         </button>
       </form>
     </div>
