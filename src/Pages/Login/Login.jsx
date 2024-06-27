@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FaSpinner } from "react-icons/fa";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { ToastContainer, toast } from "react-toastify";
@@ -36,9 +35,11 @@ export const Login = () => {
         navigate("/"); 
       } catch (error) {
         console.log(error);
+        toast.error("Tài khoản hoặc mật khẩu sai vui lòng thừ lại")
       } finally {
         setLoading(false);
-        setSubmitting(false); // Đặt lại trạng thái của form sau khi hoàn thành
+        toast.error("Tài khoản hoặc mật khẩu sai vui lòng thừ lại")
+        setSubmitting(false); 
       }
     },
   });
