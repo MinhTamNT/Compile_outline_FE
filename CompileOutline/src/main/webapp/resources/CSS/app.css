@@ -1,0 +1,99 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+html ::-webkit-scrollbar {
+    width: 10px;
+}
+
+html ::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background-color: rgba(22, 24, 35, 0.06);
+}
+
+
+/*---------------------------------- !*specification*! --------------------*/
+
+.card {
+    background-color: #ffffff;
+    border-radius: 15px;
+    border: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.card-title {
+    font-size: 1.25rem;
+    color: black;
+    font-weight: bold;
+}
+
+.card-subtitle {
+    font-size: 0.875rem;
+    color: #6c757d;
+}
+
+.btn {
+    border-radius: 10px;
+    font-weight: bold;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+
+.btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+.btn-success:hover {
+    background-color: #218838;
+    border-color: #218838;
+}
+
+.page-link:hover {
+    color: #007bff; /* Màu chữ khi hover */
+    text-decoration: none; /* Loại bỏ gạch chân */
+    background-color: #f8f9fa; /* Màu nền khi hover */
+    border-color: #dee2e6; /* Màu viền khi hover */
+}
+
+.page-link:focus {
+    box-shadow: none; /* Loại bỏ shadow khi focus */
+}
+
+.digit-group {
+    input {
+        width: 50px;
+        height: 50px;
+        border: none;
+        background-color: gray;
+        line-height: 50px;
+        text-align: center;
+        font-size: 24px;
+        font-family: 'Raleway', sans-serif;
+        font-weight: 200;
+        color: white;
+        border-radius: 10px;
+        margin: 0 2px;
+    }
+
+    .splitter {
+        padding: 0 5px;
+        color: white;
+        font-size: 24px;
+    }
+}
+
+.prompt {
+    margin-bottom: 20px;
+    font-size: 20px;
+    color: white;
+}
