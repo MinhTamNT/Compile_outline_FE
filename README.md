@@ -14,7 +14,7 @@ This application allows students to read all university specifications, comment 
 - **User Authentication and Authorization**:
 
   - Students can log in using their university-provided accounts.
-  - Lecture account will be register and after admin wil active account then lecturer can login
+  - Lecture account will be registered and after the admin active account the lecturer can log in
   - Role-based access control to ensure only authenticated users can comment and rate.
 
 - **Specifications Management**:
@@ -25,14 +25,14 @@ This application allows students to read all university specifications, comment 
 
   - Add and delete comments on specifications.
   - View comments from other students to facilitate discussion and feedback.
-  - Classify all the comments such as : positive ,negative,netural
+  - Classify all the comments such as : positive,negative,neutral
 
 - **Rating System**:
   - Rate specifications based on personal experiences and opinions.
   - View average ratings for each specification.
 - **Admin site**:
 
-  - Will be the stats all the specification was submitted following month and quarter
+  - Will be the stats all the specification was submitted the following month and quarter
   - And stats all the comments depending on the classify
 
 ## Tech Stack
@@ -60,7 +60,7 @@ This application allows students to read all university specifications, comment 
 
 ```sh
 git clone https://github.com/MinhTamNT/Compile_outline_FE.git
-cd Compile_outline_FE
+cd Fe
 ```
 
 ```sh
@@ -70,7 +70,7 @@ npm install
 **Backend**:
 
 ```sh
-cd complie-outline-courese
+cd CompileOutline
 and build project
 ```
 
